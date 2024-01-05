@@ -1,55 +1,44 @@
 class Key {
-    private signature: number;
+    private signature: number = Math.random();  
 
-    constructor() {
-        this.signature = Math.random();  
-    }
-    getSignature() {
+    getSignature(): number {
         return this.signature;
     }
 }
 
 class Person {
-    private key: Key;
+    constructor(private key: Key) {}
 
-    constructor(obj: Key) {
-        this.key = obj;
-    }
-
-    getKey() {
+    getKey(): Key {
         return this.key
     }
 }
 
 abstract class House {
-    public door: 'open' | 'close'; 
-    protected key: Key;
+    public door: boolean = false;
     private tenants: Person[] = [];
 
-constructor(obj: Key) {
-    this.key = obj;
-  }
+constructor(protected key: Key) {}
 
-    comeIn(obj: Person) {
-        if (this.door === 'open') {
+    comeIn(obj: Person): void {
+        if (this.door) {
             this.tenants.push(obj);
             console.log('Person entered the house.');
         } else {
             console.log('The door is closed. Person cannot enter.');
         }
     }
-    abstract openDoor(obj: Key):number
+    abstract openDoor(obj: Key):void
 }
 
 class MyHouse extends House {
-openDoor(obj: Key): number {
+openDoor(obj: Key): void {
     if (obj.getSignature() === this.key.getSignature()) {
-        this.door = 'open';
+        this.door = true;
         console.log('The door is opened.');
-        return 1; 
     } else {
-        console.log('Invalid key. The door remains closed.');
-        return 0; 
+        this.door = false;
+        console.log('Invalid key. The door remains closed.'); 
     }
 }
 }
@@ -67,22 +56,22 @@ house.comeIn(person);
 // 2
 
 const key2 = new Key();
+
 const house2 = new MyHouse(key);
 const person2 = new Person(key);
-const result = house.openDoor(person.getKey());
 
-if (result === 1) {
-    house.comeIn(person);
-}
+house.openDoor(person.getKey());
+
+house.comeIn(person);
 // 3
 
 const key3 = new Key();
-const house3 = new MyHouse(key);
-const person3 = new Person(key);
-const result2 = house.openDoor(person.getKey());
 
-if (result === 0) {
-    house.comeIn(person);
-}
+const house3 = new MyHouse(key);
+const perso3 = new Person(key);
+
+house.openDoor(person.getKey());
+
+house.comeIn(person);
 //
 export {};
